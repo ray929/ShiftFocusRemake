@@ -1,9 +1,0 @@
-## Interface: 120000,120001,120005,120007
-## Title: ShiftFocus
-## Notes: 鼠标指向快速设置焦点，默认Shift+左键
-## Author: 誓小言
-## Version: 2.0
-## SavedVariables: ShiftFocusDB
-
-Localization.lua
-ShiftFocus.lua

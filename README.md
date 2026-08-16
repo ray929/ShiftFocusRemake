@@ -29,5 +29,5 @@ Set your focus on mouseover units with **Shift + Left Click**, optionally applyi
 
 - 默认操作：**Shift + 左键** 点击任意单位框体或姓名版
 - Default: **Shift + Left Click** on any unit frame or nameplate
-- 设置面板：`ESC` → 选项 → 插件 → ShiftFocus
-- Options: `ESC` → Game Options → AddOns → ShiftFocus
+- 设置面板:`ESC` → 选项 → 插件 → ShiftFocusRemake
+- Options: `ESC` → Game Options → AddOns → ShiftFocusRemake

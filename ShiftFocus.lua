@@ -1,18 +1,25 @@
 --============================================================================
---  ShiftFocus
+--  ShiftFocusRemake
 --  为暴雪原生框架、UUF、DandersFrames、Enhance Qol、EllesmereUI 及姓名版
 --  添加鼠标指向设置焦点与快速标记功能。
---  作者：誓小言
+--  原作者：誓小言 | Remake：ray929
 --============================================================================
 
-local ADDON_NAME = "ShiftFocus"
-local L = ShiftFocusL
+local ADDON_NAME = "ShiftFocusRemake"
+local L = ShiftFocusRemakeL
 
 -------------------------------------------------------------------------------
 --  配置管理
 -------------------------------------------------------------------------------
 local function InitializeDB()
-    if not ShiftFocusDB then ShiftFocusDB = {} end
+    -- 从原版 ShiftFocus 迁移设置(仅当原插件同时安装时其变量才会被加载)
+    if type(ShiftFocusDB) == "table" and next(ShiftFocusRemakeDB or {}) == nil then
+        ShiftFocusRemakeDB = {}
+        for k, v in pairs(ShiftFocusDB) do
+            ShiftFocusRemakeDB[k] = v
+        end
+    end
+    if not ShiftFocusRemakeDB then ShiftFocusRemakeDB = {} end
     local defaults = {
         allowClearFocus   = false,
         modifier          = "shift",
@@ -22,15 +29,15 @@ local function InitializeDB()
         preventOverwrite  = false,
     }
     for k, v in pairs(defaults) do
-        if ShiftFocusDB[k] == nil then
-            ShiftFocusDB[k] = v
+        if ShiftFocusRemakeDB[k] == nil then
+            ShiftFocusRemakeDB[k] = v
         end
     end
 end
 InitializeDB()
 
 local function GetConfig()
-    return ShiftFocusDB.modifier, ShiftFocusDB.mouseButton
+    return ShiftFocusRemakeDB.modifier, ShiftFocusRemakeDB.mouseButton
 end
 
 -------------------------------------------------------------------------------
@@ -64,13 +71,13 @@ local optionsOrder = {
 -------------------------------------------------------------------------------
 local function GetFocusMacro()
     local markmacro = ""
-    if ShiftFocusDB.enableMarking and ShiftFocusDB.selectedMarker and ShiftFocusDB.selectedMarker > 0 then
-        local prevent = ShiftFocusDB.preventOverwrite and "~" or ""
-        markmacro = "\n/tm [@mouseover]" .. prevent .. ShiftFocusDB.selectedMarker
+    if ShiftFocusRemakeDB.enableMarking and ShiftFocusRemakeDB.selectedMarker and ShiftFocusRemakeDB.selectedMarker > 0 then
+        local prevent = ShiftFocusRemakeDB.preventOverwrite and "~" or ""
+        markmacro = "\n/tm [@mouseover]" .. prevent .. ShiftFocusRemakeDB.selectedMarker
     end
 
     local macro = ""
-    if ShiftFocusDB.allowClearFocus then
+    if ShiftFocusRemakeDB.allowClearFocus then
         macro = "/clearfocus [@mouseover,noexists]\n"
     end
     macro = macro .. "/focus [@mouseover,exists]" .. markmacro
@@ -109,25 +116,25 @@ local BUTTON_NAMES = {
 }
 
 local function InitMouseoverFocus(macroText)
-    if not ShiftFocuserButton then
-        ShiftFocuserButton = CreateFrame("CheckButton", "ShiftFocuserButton", UIParent, "SecureActionButtonTemplate")
-        ShiftFocuserButton:RegisterForClicks("AnyDown", "AnyUp")
-        ShiftFocuserButton:SetAttribute("type", "macro")
+    if not ShiftFocusRemakeButton then
+        ShiftFocusRemakeButton = CreateFrame("CheckButton", "ShiftFocusRemakeButton", UIParent, "SecureActionButtonTemplate")
+        ShiftFocusRemakeButton:RegisterForClicks("AnyDown", "AnyUp")
+        ShiftFocusRemakeButton:SetAttribute("type", "macro")
     end
 
-    if ShiftFocuserButton and not InCombatLockdown() then
+    if ShiftFocusRemakeButton and not InCombatLockdown() then
         macroText = macroText or GetFocusMacro()
         local mod, btn = GetConfig()
         local btnName = BUTTON_NAMES[btn] or "LeftButton"
 
         -- 无后缀兜底 + 数字/按键名两种后缀变体,任意鼠标按键均能命中
-        ShiftFocuserButton:SetAttribute("macrotext", macroText)
-        ShiftFocuserButton:SetAttribute("macrotext" .. btn, macroText)
-        ShiftFocuserButton:SetAttribute("macrotext" .. btnName, macroText)
+        ShiftFocusRemakeButton:SetAttribute("macrotext", macroText)
+        ShiftFocusRemakeButton:SetAttribute("macrotext" .. btn, macroText)
+        ShiftFocusRemakeButton:SetAttribute("macrotext" .. btnName, macroText)
 
-        ClearOverrideBindings(ShiftFocuserButton)
-        SetOverrideBindingClick(ShiftFocuserButton, true, mod .. "-BUTTON" .. btn,
-            "ShiftFocuserButton", btnName)
+        ClearOverrideBindings(ShiftFocusRemakeButton)
+        SetOverrideBindingClick(ShiftFocusRemakeButton, true, mod .. "-BUTTON" .. btn,
+            "ShiftFocusRemakeButton", btnName)
     end
 end
 
@@ -233,38 +240,38 @@ end)
 -------------------------------------------------------------------------------
 --  设置面板
 -------------------------------------------------------------------------------
-local panel = CreateFrame("Frame", "ShiftFocusOptionsPanel", UIParent)
-panel.name = "ShiftFocus"
+local panel = CreateFrame("Frame", "ShiftFocusRemakeOptionsPanel", UIParent)
+panel.name = "ShiftFocusRemake"
 
 local title = panel:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
 title:SetPoint("TOPLEFT", 16, -16)
 title:SetText(L["SETTING_TITLE"])
 
-local clearFocusCheck = CreateFrame("CheckButton", "ShiftFocusClearFocusCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
+local clearFocusCheck = CreateFrame("CheckButton", "ShiftFocusRemakeClearFocusCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
 clearFocusCheck:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -15)
 clearFocusCheck.Text:SetText(L["CLEAR_FOCUS_DESC"])
 clearFocusCheck:SetScript("OnClick", function(self)
-    ShiftFocusDB.allowClearFocus = self:GetChecked()
+    ShiftFocusRemakeDB.allowClearFocus = self:GetChecked()
     InitAll()
 end)
 
-local markCheck = CreateFrame("CheckButton", "ShiftFocusEnableMarkingCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
+local markCheck = CreateFrame("CheckButton", "ShiftFocusRemakeEnableMarkingCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
 markCheck:SetPoint("TOPLEFT", clearFocusCheck, "BOTTOMLEFT", 0, -10)
 markCheck.Text:SetText(L["ENABLE_MARKING_DESC"])
 markCheck:SetScript("OnClick", function(self)
-    ShiftFocusDB.enableMarking = self:GetChecked()
+    ShiftFocusRemakeDB.enableMarking = self:GetChecked()
     InitAll()
 end)
 
-local preventOverwriteCheck = CreateFrame("CheckButton", "ShiftFocusPreventOverwriteCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
+local preventOverwriteCheck = CreateFrame("CheckButton", "ShiftFocusRemakePreventOverwriteCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
 preventOverwriteCheck:SetPoint("TOPLEFT", markCheck, "BOTTOMLEFT", 0, -10)
 preventOverwriteCheck.Text:SetText(L["PREVENT_OVERWRITE_DESC"] or "防止覆盖已有标记 (/tm ~1-8)")
 preventOverwriteCheck:SetScript("OnClick", function(self)
-    ShiftFocusDB.preventOverwrite = self:GetChecked()
+    ShiftFocusRemakeDB.preventOverwrite = self:GetChecked()
     InitAll()
 end)
 
-local markerDropdown = CreateFrame("Frame", "ShiftFocusMarkerDropdown", panel, "UIDropDownMenuTemplate")
+local markerDropdown = CreateFrame("Frame", "ShiftFocusRemakeMarkerDropdown", panel, "UIDropDownMenuTemplate")
 markerDropdown:SetPoint("LEFT", markCheck.Text, "RIGHT", -5, -2)
 UIDropDownMenu_SetWidth(markerDropdown, 100)
 UIDropDownMenu_Initialize(markerDropdown, function()
@@ -273,7 +280,7 @@ UIDropDownMenu_Initialize(markerDropdown, function()
         local idx = nameToIndex[name]
         info.text = (markerTextures[idx] or "") .. " " .. name
         info.func = function()
-            ShiftFocusDB.selectedMarker = idx
+            ShiftFocusRemakeDB.selectedMarker = idx
             UIDropDownMenu_SetText(markerDropdown, info.text)
             InitAll()
         end
@@ -289,7 +296,7 @@ local btnLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 btnLabel:SetPoint("LEFT", modLabel, "RIGHT", 105, 0)
 btnLabel:SetText(L["MOUSE_BUTTON"])
 
-local modDropdown = CreateFrame("Frame", "ShiftFocusModDropdown", panel, "UIDropDownMenuTemplate")
+local modDropdown = CreateFrame("Frame", "ShiftFocusRemakeModDropdown", panel, "UIDropDownMenuTemplate")
 modDropdown:SetPoint("TOPLEFT", modLabel, "BOTTOMLEFT", -15, -5)
 UIDropDownMenu_SetWidth(modDropdown, 100)
 UIDropDownMenu_Initialize(modDropdown, function()
@@ -297,7 +304,7 @@ UIDropDownMenu_Initialize(modDropdown, function()
         local info = UIDropDownMenu_CreateInfo()
         info.text = mod
         info.func = function()
-            ShiftFocusDB.modifier = mod
+            ShiftFocusRemakeDB.modifier = mod
             UIDropDownMenu_SetText(modDropdown, mod)
             InitAll()
         end
@@ -305,7 +312,7 @@ UIDropDownMenu_Initialize(modDropdown, function()
     end
 end)
 
-local btnDropdown = CreateFrame("Frame", "ShiftFocusBtnDropdown", panel, "UIDropDownMenuTemplate")
+local btnDropdown = CreateFrame("Frame", "ShiftFocusRemakeBtnDropdown", panel, "UIDropDownMenuTemplate")
 btnDropdown:SetPoint("LEFT", modDropdown, "RIGHT", -10, 0)
 UIDropDownMenu_SetWidth(btnDropdown, 100)
 local buttons = {
@@ -320,7 +327,7 @@ UIDropDownMenu_Initialize(btnDropdown, function()
         local info = UIDropDownMenu_CreateInfo()
         info.text = btn.text
         info.func = function()
-            ShiftFocusDB.mouseButton = btn.v
+            ShiftFocusRemakeDB.mouseButton = btn.v
             UIDropDownMenu_SetText(btnDropdown, btn.text)
             InitAll()
         end
@@ -329,12 +336,12 @@ UIDropDownMenu_Initialize(btnDropdown, function()
 end)
 
 panel:SetScript("OnShow", function()
-    clearFocusCheck:SetChecked(ShiftFocusDB.allowClearFocus)
-    markCheck:SetChecked(ShiftFocusDB.enableMarking)
-    preventOverwriteCheck:SetChecked(ShiftFocusDB.preventOverwrite)
-    UIDropDownMenu_SetText(modDropdown, ShiftFocusDB.modifier)
+    clearFocusCheck:SetChecked(ShiftFocusRemakeDB.allowClearFocus)
+    markCheck:SetChecked(ShiftFocusRemakeDB.enableMarking)
+    preventOverwriteCheck:SetChecked(ShiftFocusRemakeDB.preventOverwrite)
+    UIDropDownMenu_SetText(modDropdown, ShiftFocusRemakeDB.modifier)
 
-    local curIdx = ShiftFocusDB.selectedMarker or 0
+    local curIdx = ShiftFocusRemakeDB.selectedMarker or 0
     local curName = L["MARKER_0"]
     for n, i in pairs(nameToIndex) do
         if i == curIdx then curName = n end
@@ -343,7 +350,7 @@ panel:SetScript("OnShow", function()
 
     local btnT = L["LEFT_BUTTON"]
     for _, b in ipairs(buttons) do
-        if b.v == ShiftFocusDB.mouseButton then btnT = b.text end
+        if b.v == ShiftFocusRemakeDB.mouseButton then btnT = b.text end
     end
     UIDropDownMenu_SetText(btnDropdown, btnT)
 end)

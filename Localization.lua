@@ -1,12 +1,12 @@
-local ADDON_NAME = "ShiftFocus"
+local ADDON_NAME = "ShiftFocusRemake"
 local L = setmetatable({}, { __index = function(t, k)
     local v = tostring(k)
     rawset(t, k, v)
     return v
 end })
 
--- English
-    L["SETTING_TITLE"] = "ShiftFocus Settings"
+-- English (default)
+    L["SETTING_TITLE"] = "ShiftFocusRemake Settings"
     L["CLEAR_FOCUS_DESC"] = "Allow clearing focus by clicking empty space"
     L["ENABLE_MARKING_DESC"] = "Set Raid Marker while focusing:"
     L["PREVENT_OVERWRITE_DESC"] = "Prevent overwriting existing markers (/tm ~1-8)"
@@ -30,7 +30,7 @@ end })
 
 -- 中文
 if GetLocale() == "zhCN" then
-    L["SETTING_TITLE"] = "ShiftFocus 设置"
+    L["SETTING_TITLE"] = "ShiftFocusRemake 设置"
     L["CLEAR_FOCUS_DESC"] = "允许点击空白清除焦点"
     L["ENABLE_MARKING_DESC"] = "设置焦点时同时标记："
     L["PREVENT_OVERWRITE_DESC"] = "防止覆盖已有标记 (/tm ~1-8)"
@@ -41,7 +41,7 @@ if GetLocale() == "zhCN" then
     L["MIDDLE_BUTTON"] = "中键"
     L["BUTTON_4"] = "侧4"
     L["BUTTON_5"] = "侧5"
-    
+
     L["MARKER_0"] = "无"
     L["MARKER_1"] = "星星"
     L["MARKER_2"] = "大饼"
@@ -53,4 +53,4 @@ if GetLocale() == "zhCN" then
     L["MARKER_8"] = "骷髅"
 end
 
-ShiftFocusL = L
+ShiftFocusRemakeL = L
