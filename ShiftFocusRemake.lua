@@ -25,7 +25,7 @@ local function InitializeDB()
     local defaults = {
         modifier          = "shift",
         mouseButton       = "1",
-        selectedMarker    = 0,
+        selectedMarker    = 1,          -- 默认星星
         enableMarking     = false,
         preventOverwrite  = false,
         partyAnnounce     = true,
@@ -46,9 +46,9 @@ end
 --  标记图标与映射
 -------------------------------------------------------------------------------
 local nameToIndex = {
-    [L["MARKER_0"]] = 0, [L["MARKER_1"]] = 1, [L["MARKER_2"]] = 2, [L["MARKER_3"]] = 3,
-    [L["MARKER_4"]] = 4, [L["MARKER_5"]] = 5, [L["MARKER_6"]] = 6, [L["MARKER_7"]] = 7,
-    [L["MARKER_8"]] = 8,
+    [L["MARKER_1"]] = 1, [L["MARKER_2"]] = 2, [L["MARKER_3"]] = 3,
+    [L["MARKER_4"]] = 4, [L["MARKER_5"]] = 5, [L["MARKER_6"]] = 6,
+    [L["MARKER_7"]] = 7, [L["MARKER_8"]] = 8,
 }
 
 local markerTextures = {
@@ -60,11 +60,10 @@ local markerTextures = {
     [6] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:16|t",
     [7] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16|t",
     [8] = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16|t",
-    [0] = "|TInterface\\Buttons\\UI-GroupLoot-Pass-Up:16|t",
 }
 
 local optionsOrder = {
-    L["MARKER_0"], L["MARKER_1"], L["MARKER_2"], L["MARKER_3"], L["MARKER_4"],
+    L["MARKER_1"], L["MARKER_2"], L["MARKER_3"], L["MARKER_4"],
     L["MARKER_5"], L["MARKER_6"], L["MARKER_7"], L["MARKER_8"],
 }
 
@@ -77,9 +76,15 @@ local markerChatTokens = {
 -------------------------------------------------------------------------------
 --  宏命令生成
 -------------------------------------------------------------------------------
+local function IsInPartyDungeon()
+    local _, instanceType = IsInInstance()
+    return instanceType == "party"
+end
+
 local function GetFocusMacro()
     local markmacro = ""
-    if ShiftFocusRemakeDB.enableMarking and ShiftFocusRemakeDB.selectedMarker and ShiftFocusRemakeDB.selectedMarker > 0 then
+    -- 团队标记仅在5人本(含追随者模式)生效,避免野外/团本误标
+    if IsInPartyDungeon() and ShiftFocusRemakeDB.enableMarking and ShiftFocusRemakeDB.selectedMarker and ShiftFocusRemakeDB.selectedMarker > 0 then
         local prevent = ShiftFocusRemakeDB.preventOverwrite and "~" or ""
         markmacro = "\n/tm [@mouseover]" .. prevent .. ShiftFocusRemakeDB.selectedMarker
     end
@@ -226,20 +231,15 @@ end
 
 local function AnnounceMarker(isReload)
     local marker = ShiftFocusRemakeDB.selectedMarker or 0
-    print("ShiftFocusRemake: announce check", "partyAnnounce=", ShiftFocusRemakeDB.partyAnnounce, "marker=", marker, "enableMarking=", ShiftFocusRemakeDB.enableMarking)
     if not ShiftFocusRemakeDB.partyAnnounce then return end
     if not (ShiftFocusRemakeDB.enableMarking and marker and marker > 0) then return end
-
-    local _, instanceType = IsInInstance()
-    print("ShiftFocusRemake: instanceType=", instanceType)
-    if instanceType ~= "party" then return end
+    if not IsInPartyDungeon() then return end
 
     -- 重载界面仍在同一地图时不重复喊
     local mapID = C_Map.GetBestMapForUnit("player")
     if isReload and lastAnnouncedMapID == mapID then return end
     lastAnnouncedMapID = mapID
 
-    print("ShiftFocusRemake: scheduling announce in 2s")
     C_Timer.After(2, DoAnnounce)
 end
 
@@ -367,8 +367,8 @@ panel:SetScript("OnShow", function()
     preventOverwriteCheck:SetChecked(ShiftFocusRemakeDB.preventOverwrite)
     UIDropDownMenu_SetText(modDropdown, ShiftFocusRemakeDB.modifier)
 
-    local curIdx = ShiftFocusRemakeDB.selectedMarker or 0
-    local curName = L["MARKER_0"]
+    local curIdx = ShiftFocusRemakeDB.selectedMarker or 1
+    local curName = L["MARKER_1"]
     for n, i in pairs(nameToIndex) do
         if i == curIdx then curName = n end
     end

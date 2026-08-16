@@ -19,7 +19,6 @@ end })
     L["BUTTON_4"] = "Button 4"
     L["BUTTON_5"] = "Button 5"
 
-    L["MARKER_0"] = "None"
     L["MARKER_1"] = "Star"
     L["MARKER_2"] = "Circle"
     L["MARKER_3"] = "Diamond"
@@ -44,7 +43,6 @@ if GetLocale() == "zhCN" then
     L["BUTTON_4"] = "侧4"
     L["BUTTON_5"] = "侧5"
 
-    L["MARKER_0"] = "无"
     L["MARKER_1"] = "星星"
     L["MARKER_2"] = "大饼"
     L["MARKER_3"] = "菱形"
