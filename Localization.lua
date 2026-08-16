@@ -7,7 +7,8 @@ end })
 
 -- English (default)
     L["SETTING_TITLE"] = "ShiftFocusRemake Settings"
-    L["CLEAR_FOCUS_DESC"] = "Allow clearing focus by clicking empty space"
+    L["PARTY_ANNOUNCE_DESC"] = "Announce focus marker to party when entering dungeons"
+    L["PARTY_ANNOUNCE_MSG"] = "I'll focus %s and interrupt"
     L["ENABLE_MARKING_DESC"] = "Set Raid Marker while focusing:"
     L["PREVENT_OVERWRITE_DESC"] = "Prevent overwriting existing markers (/tm ~1-8)"
     L["MODIFIER_KEY"] = "Modifier Key"
@@ -31,7 +32,8 @@ end })
 -- 中文
 if GetLocale() == "zhCN" then
     L["SETTING_TITLE"] = "ShiftFocusRemake 设置"
-    L["CLEAR_FOCUS_DESC"] = "允许点击空白清除焦点"
+    L["PARTY_ANNOUNCE_DESC"] = "进入5人副本后在小队通告焦点标记"
+    L["PARTY_ANNOUNCE_MSG"] = "我焦点%s并打断"
     L["ENABLE_MARKING_DESC"] = "设置焦点时同时标记："
     L["PREVENT_OVERWRITE_DESC"] = "防止覆盖已有标记 (/tm ~1-8)"
     L["MODIFIER_KEY"] = "修饰键"

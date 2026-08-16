@@ -20,8 +20,10 @@ Set your focus on mouseover units with **Shift + Left Click**, optionally applyi
 - Works with Blizzard default frames and nameplates, plus popular unit frame addons: UUF, DandersFrames, Enhance Qol, EllesmereUI
 - 设置焦点的同时自动施加团队标记（可选），支持"不覆盖已有标记"模式（`/tm ~`）
 - Optionally apply a raid marker while focusing, with a "don't overwrite existing markers" mode (`/tm ~`)
-- 可选：鼠标指向空白处按下组合键时清除焦点
-- Optional: clear your focus when pressing the hotkey with no unit under the cursor
+- 鼠标指向空白处按下组合键时清除焦点（恒定生效，无需设置）
+- Clear your focus when pressing the hotkey with no unit under the cursor (always on, no setup needed)
+- 进入5人副本后，若已启用标记，自动在小队通告："我焦点{符号}并打断"（默认启用，可关闭）
+- When entering a 5-player dungeon with marking enabled, automatically announce "I'll focus {marker} and interrupt" in party chat (enabled by default, can be disabled)
 - 组合键完全可自定义：修饰键（Shift / Alt / Ctrl）× 鼠标按键（左 / 右 / 中 / 侧4 / 侧5）
 - Fully customizable hotkey: modifier (Shift / Alt / Ctrl) × mouse button (left / right / middle / button 4 / button 5)
 

@@ -3,8 +3,8 @@
 ## Notes: Mouseover quick focus, default Shift + Left Click
 ## Notes-zhCN: 鼠标指向快速设置焦点，默认 Shift + 左键
 ## Author: 誓小言 (original), ray929 (remake)
-## Version: 2.1.0
+## Version: 2.2.0
 ## SavedVariables: ShiftFocusRemakeDB
 
 Localization.lua
-ShiftFocus.lua
+ShiftFocusRemake.lua
