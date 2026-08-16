@@ -229,6 +229,17 @@ local function DoAnnounce()
     end
 end
 
+local function CanAnnounceMarkerNow()
+    local marker = ShiftFocusRemakeDB.selectedMarker or 0
+    return ShiftFocusRemakeDB.partyAnnounce and ShiftFocusRemakeDB.enableMarking and marker > 0 and IsInPartyDungeon()
+end
+
+local function AnnounceMarkerNow()
+    if CanAnnounceMarkerNow() then
+        DoAnnounce()
+    end
+end
+
 local function AnnounceMarker(isReload)
     local marker = ShiftFocusRemakeDB.selectedMarker or 0
     if not ShiftFocusRemakeDB.partyAnnounce then return end
@@ -287,6 +298,7 @@ markCheck.Text:SetText(L["ENABLE_MARKING_DESC"])
 markCheck:SetScript("OnClick", function(self)
     ShiftFocusRemakeDB.enableMarking = self:GetChecked()
     InitAll()
+    AnnounceMarkerNow()
 end)
 
 local preventOverwriteCheck = CreateFrame("CheckButton", "ShiftFocusRemakePreventOverwriteCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
@@ -309,6 +321,7 @@ UIDropDownMenu_Initialize(markerDropdown, function()
             ShiftFocusRemakeDB.selectedMarker = idx
             UIDropDownMenu_SetText(markerDropdown, info.text)
             InitAll()
+            AnnounceMarkerNow()
         end
         UIDropDownMenu_AddButton(info)
     end

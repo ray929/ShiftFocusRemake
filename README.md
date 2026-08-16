@@ -1,8 +1,8 @@
 # ShiftFocusRemake
 
- Shift+左键 即可将鼠标指向的单位设为焦点，并可选同时打上团队标记。适用于正式服（The War Within 及后续版本）。
+ Shift+左键 即可将鼠标指向的单位设为焦点，并可选同时打上团队标记。
 
-Set your focus on mouseover units with **Shift + Left Click**, optionally applying a raid marker at the same time. For retail WoW (The War Within and later).
+Set your focus on mouseover units with **Shift + Left Click**, optionally applying a raid marker at the same time. 
 
 > 本插件 Fork 自 [ShiftFocus](https://www.curseforge.com/wow/addons/shiftfocus/)（作者：誓小言），因原插件需要适配新版本、修复 Bug 及新增功能而制作此 Remake 版本。
 >
@@ -22,8 +22,8 @@ Set your focus on mouseover units with **Shift + Left Click**, optionally applyi
 - Optionally apply a raid marker while focusing, only active in 5-player dungeons (not world/raids); includes a "don't overwrite existing markers" mode (`/tm ~`)
 - 鼠标指向空白处按下组合键时清除焦点（恒定生效，无需设置）
 - Clear your focus when pressing the hotkey with no unit under the cursor (always on, no setup needed)
-- 进入5人副本后，若已启用标记，自动在小队通告："我焦点{符号}并打断"（默认启用，仅5人本生效）
-- When entering a 5-player dungeon with marking enabled, automatically announce "I'll focus {marker} and interrupt" in party chat (enabled by default, dungeons only)
+- 进入5人副本后，若已启用标记，自动在小队通告："我焦点{符号}并打断"（默认启用，仅5人本生效）；在设置中启用标记或切换标记时也会立即通告
+- When entering a 5-player dungeon with marking enabled, automatically announce "I'll focus {marker} and interrupt" in party chat (enabled by default, dungeons only); also announces immediately when enabling marking or changing the marker in settings
 - 组合键完全可自定义：修饰键（Shift / Alt / Ctrl）× 鼠标按键（左 / 右 / 中 / 侧4 / 侧5）
 - Fully customizable hotkey: modifier (Shift / Alt / Ctrl) × mouse button (left / right / middle / button 4 / button 5)
 
