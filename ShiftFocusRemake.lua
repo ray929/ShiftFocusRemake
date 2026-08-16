@@ -20,7 +20,8 @@ local function InitializeDB()
         end
     end
     if not ShiftFocusRemakeDB then ShiftFocusRemakeDB = {} end
-    ShiftFocusRemakeDB.allowClearFocus = nil -- 旧选项已移除:清焦点恒定生效
+    ShiftFocusRemakeDB.allowClearFocus = nil      -- 旧选项已移除:清焦点恒定生效
+    ShiftFocusRemakeDB.announcedInstanceID = nil  -- 旧去重字段已移除:改为内存级去重
     local defaults = {
         modifier          = "shift",
         mouseButton       = "1",
@@ -227,18 +228,20 @@ end
 -------------------------------------------------------------------------------
 --  小队通告:进入5人本后提示焦点标记
 -------------------------------------------------------------------------------
-local function AnnounceMarker()
+-- 内存级去重:重载界面且仍在同一地图时不重复喊
+local lastAnnouncedMapID
+
+local function AnnounceMarker(isReload)
     if not ShiftFocusRemakeDB.partyAnnounce then return end
     if not (ShiftFocusRemakeDB.enableMarking and ShiftFocusRemakeDB.selectedMarker and ShiftFocusRemakeDB.selectedMarker > 0) then return end
-    if not IsInGroup() then return end
 
+    -- 5人本(含追随者模式)均通告;不依赖 IsInGroup,追随者本无真人小队时会误判
     local _, instanceType = IsInInstance()
     if instanceType ~= "party" then return end
 
-    -- 同一副本实例只通告一次(重载界面不重复)
-    local instanceID = select(8, GetInstanceInfo())
-    if ShiftFocusRemakeDB.announcedInstanceID == instanceID then return end
-    ShiftFocusRemakeDB.announcedInstanceID = instanceID
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if isReload and lastAnnouncedMapID == mapID then return end
+    lastAnnouncedMapID = mapID
 
     local token = markerChatTokens[ShiftFocusRemakeDB.selectedMarker]
     if token then
@@ -250,15 +253,16 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
-frame:SetScript("OnEvent", function(_, event, unit)
+frame:SetScript("OnEvent", function(_, event, arg1, arg2)
     if event == "NAME_PLATE_UNIT_ADDED" then
-        local plate = C_NamePlate.GetNamePlateForUnit(unit)
+        local plate = C_NamePlate.GetNamePlateForUnit(arg1)
         if plate and not InCombatLockdown() then
             SetFocusHotkey(plate)
         end
     else
+        -- PLAYER_ENTERING_WORLD: arg1=isInitialLogin, arg2=isReloadUI
         if event == "PLAYER_ENTERING_WORLD" then
-            AnnounceMarker()
+            AnnounceMarker(arg2)
         end
         if not InCombatLockdown() then
             C_Timer.After(2, InitAll)
