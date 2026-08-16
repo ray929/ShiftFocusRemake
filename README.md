@@ -8,6 +8,10 @@ Set your focus on mouseover units with **Shift + Left Click**, optionally applyi
 >
 > This addon is forked from [ShiftFocus](https://www.curseforge.com/wow/addons/shiftfocus/) (by 誓小言). This Remake exists to update it for current game versions, fix bugs, and add new features.
 
+> **声明**：本插件仅用于满足作者个人自用需求，功能与更新节奏以自身需求为准。他人可自行取用，但不提供任何保证或支持，使用风险与责任自负。
+>
+> **Disclaimer**: This addon is built solely for the author's personal use; features and updates follow the author's own needs. Anyone may use it, but it comes with no warranty or support — use at your own risk.
+
 ## 功能 Features
 
 - 鼠标指向任意单位框体或姓名版，按组合键即可设置焦点，无需选中目标
