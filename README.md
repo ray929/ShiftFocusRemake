@@ -27,6 +27,10 @@ Set your focus on mouseover units with **Shift + Left Click**, optionally applyi
 - 组合键完全可自定义：修饰键（Shift / Alt / Ctrl）× 鼠标按键（左 / 右 / 中 / 侧4 / 侧5）
 - Fully customizable hotkey: modifier (Shift / Alt / Ctrl) × mouse button (left / right / middle / button 4 / button 5)
 
+> **注意：本插件不会在小队/团队框架上注册焦点动作**，因为 12.x 起暴雪自带的“点击施法”系统会与小队/团队框架上的自定义鼠标绑定冲突。若需要在队友框架上快速设置焦点，请使用暴雪默认点击施法或相关单位框体插件的自带功能。
+>
+> **Note: This addon does not register focus actions on party/raid frames**, because the built-in Click-Cast system since 12.x conflicts with custom mouse bindings on party/raid frames. Use Blizzard's default click-cast or your unit frame addon's own feature to set focus on party/raid frames.
+
 ## 游戏内使用 In-Game Usage
 
 - 默认操作：**Shift + 左键** 点击任意单位框体或姓名版

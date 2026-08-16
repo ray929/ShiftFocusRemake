@@ -146,8 +146,6 @@ end
 -------------------------------------------------------------------------------
 local BLIZZARD_FRAMES = {
     "PlayerFrame", "PetFrame", "TargetFrame", "TargetFrameToT", "FocusFrame",
-    "PartyMemberFrame1", "PartyMemberFrame2", "PartyMemberFrame3",
-    "PartyMemberFrame4", "PartyMemberFrame5",
     "Boss1TargetFrame", "Boss2TargetFrame", "Boss3TargetFrame",
     "Boss4TargetFrame", "Boss5TargetFrame",
 }
@@ -185,42 +183,29 @@ local function InitAll()
         if frame then SetFocusHotkey(frame, macroText) end
     end
 
-    -- 暴雪原生框架
+    -- 暴雪原生框架（不含小队/团队框架，避免与暴雪点击施法冲突）
     for _, name in ipairs(BLIZZARD_FRAMES) do apply(_G[name]) end
 
-    -- UUF (UnhaltedUnitFrames)
+    -- UUF (UnhaltedUnitFrames)（不含小队/团队框架）
     for _, name in ipairs(UUF_FRAMES) do apply(_G[name]) end
 
-    -- Enhance Qol
+    -- Enhance Qol（不含小队/团队框架）
     for _, name in ipairs(EQOL_FRAMES) do apply(_G[name]) end
 
-    -- EllesmereUI UnitFrames
+    -- EllesmereUI UnitFrames（不含小队/团队框架）
     for _, name in ipairs(EUI_UNIT_FRAMES) do apply(_G[name]) end
 
-    -- DandersFrames
+    -- DandersFrames: 仅玩家/Boss 框体，不含小队/团队
     local DF = _G["DandersFrames"]
     if DF then
         apply(DF.playerFrame)
-        if DF.partyFrames then
-            for i = 1, 4 do apply(DF.partyFrames[i]) end
-        end
-        if DF.raidFrames then
-            for i = 1, 40 do apply(DF.raidFrames[i]) end
+        if DF.bossFrames then
+            for _, f in ipairs(DF.bossFrames) do apply(f) end
         end
     end
 
     -- 姓名版
     for _, plate in pairs(C_NamePlate.GetNamePlates()) do apply(plate) end
-
-    -- EllesmereUI Raid Frames（分离模式）
-    for group = 1, 8 do
-        local hdr = _G["ERFGroupHeader" .. group]
-        if hdr then
-            for i = 1, 5 do apply(hdr[i]) end
-        end
-    end
-
-
 
     InitMouseoverFocus(macroText)
 end
