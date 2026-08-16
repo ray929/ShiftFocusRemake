@@ -98,6 +98,16 @@ end
 -------------------------------------------------------------------------------
 --  鼠标指向
 -------------------------------------------------------------------------------
+-- 12.x 起 SetOverrideBindingClick 必须显式传入 mouseClick 参数,
+-- 否则合成点击静默失效;同时属性查找需要与按键号匹配的 macrotext
+local BUTTON_NAMES = {
+    ["1"] = "LeftButton",
+    ["2"] = "RightButton",
+    ["3"] = "MiddleButton",
+    ["4"] = "Button4",
+    ["5"] = "Button5",
+}
+
 local function InitMouseoverFocus(macroText)
     if not ShiftFocuserButton then
         ShiftFocuserButton = CreateFrame("CheckButton", "ShiftFocuserButton", UIParent, "SecureActionButtonTemplate")
@@ -105,14 +115,19 @@ local function InitMouseoverFocus(macroText)
         ShiftFocuserButton:SetAttribute("type", "macro")
     end
 
-    if ShiftFocuserButton then
-        ClearOverrideBindings(ShiftFocuserButton)
+    if ShiftFocuserButton and not InCombatLockdown() then
+        macroText = macroText or GetFocusMacro()
         local mod, btn = GetConfig()
-        ShiftFocuserButton:SetAttribute("macrotext1", macroText or GetFocusMacro())
+        local btnName = BUTTON_NAMES[btn] or "LeftButton"
 
-        if not InCombatLockdown() then
-            SetOverrideBindingClick(ShiftFocuserButton, true, mod .. "-BUTTON" .. btn, "ShiftFocuserButton")
-        end
+        -- 无后缀兜底 + 数字/按键名两种后缀变体,任意鼠标按键均能命中
+        ShiftFocuserButton:SetAttribute("macrotext", macroText)
+        ShiftFocuserButton:SetAttribute("macrotext" .. btn, macroText)
+        ShiftFocuserButton:SetAttribute("macrotext" .. btnName, macroText)
+
+        ClearOverrideBindings(ShiftFocuserButton)
+        SetOverrideBindingClick(ShiftFocuserButton, true, mod .. "-BUTTON" .. btn,
+            "ShiftFocuserButton", btnName)
     end
 end
 
