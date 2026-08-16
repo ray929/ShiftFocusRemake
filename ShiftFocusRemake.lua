@@ -231,22 +231,31 @@ end
 -- 内存级去重:重载界面且仍在同一地图时不重复喊
 local lastAnnouncedMapID
 
-local function AnnounceMarker(isReload)
-    if not ShiftFocusRemakeDB.partyAnnounce then return end
-    if not (ShiftFocusRemakeDB.enableMarking and ShiftFocusRemakeDB.selectedMarker and ShiftFocusRemakeDB.selectedMarker > 0) then return end
+local function DoAnnounce()
+    local token = markerChatTokens[ShiftFocusRemakeDB.selectedMarker]
+    if token then
+        local msg = string.format(L["PARTY_ANNOUNCE_MSG"], token)
+        SendChatMessage(msg, "PARTY")
+    end
+end
 
-    -- 5人本(含追随者模式)均通告;不依赖 IsInGroup,追随者本无真人小队时会误判
+local function AnnounceMarker(isReload)
+    local marker = ShiftFocusRemakeDB.selectedMarker or 0
+    print("ShiftFocusRemake: announce check", "partyAnnounce=", ShiftFocusRemakeDB.partyAnnounce, "marker=", marker, "enableMarking=", ShiftFocusRemakeDB.enableMarking)
+    if not ShiftFocusRemakeDB.partyAnnounce then return end
+    if not (ShiftFocusRemakeDB.enableMarking and marker and marker > 0) then return end
+
     local _, instanceType = IsInInstance()
+    print("ShiftFocusRemake: instanceType=", instanceType)
     if instanceType ~= "party" then return end
 
+    -- 重载界面仍在同一地图时不重复喊
     local mapID = C_Map.GetBestMapForUnit("player")
     if isReload and lastAnnouncedMapID == mapID then return end
     lastAnnouncedMapID = mapID
 
-    local token = markerChatTokens[ShiftFocusRemakeDB.selectedMarker]
-    if token then
-        SendChatMessage(string.format(L["PARTY_ANNOUNCE_MSG"], token), "PARTY")
-    end
+    print("ShiftFocusRemake: scheduling announce in 2s")
+    C_Timer.After(2, DoAnnounce)
 end
 
 local frame = CreateFrame("Frame")
