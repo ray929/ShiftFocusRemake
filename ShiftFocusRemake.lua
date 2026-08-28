@@ -231,6 +231,12 @@ local function DoAnnounce()
         announceRetries = 0
         return
     end
+    -- 大米计时激活期间(含中途加入/reload),插件发送聊天被整体限制,
+    -- 与个人战斗/encounter 状态无关,此时直接跳过,不重试
+    if C_ChallengeMode and C_ChallengeMode.IsChallengeModeActive() then
+        announceRetries = 0
+        return
+    end
     if InCombatLockdown() then
         announcePending = true
         return
