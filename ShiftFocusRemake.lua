@@ -220,8 +220,14 @@ end
 -------------------------------------------------------------------------------
 -- 内存级去重:重载界面且仍在同一地图时不重复喊
 local lastAnnouncedMapID
+-- 战斗中 SendChatMessage 为受保护函数,先挂起,脱战后补发
+local announcePending = false
 
 local function DoAnnounce()
+    if InCombatLockdown() then
+        announcePending = true
+        return
+    end
     local token = markerChatTokens[ShiftFocusRemakeDB.selectedMarker]
     if token then
         local msg = string.format(L["PARTY_ANNOUNCE_MSG"], token)
@@ -268,6 +274,11 @@ frame:SetScript("OnEvent", function(_, event, arg1, arg2)
         -- PLAYER_ENTERING_WORLD: arg1=isInitialLogin, arg2=isReloadUI
         if event == "PLAYER_ENTERING_WORLD" then
             AnnounceMarker(arg2)
+        end
+        -- 脱战后补发被战斗拦截的进本通告
+        if event == "PLAYER_REGEN_ENABLED" and announcePending then
+            announcePending = false
+            C_Timer.After(1, AnnounceMarkerNow)
         end
         if not InCombatLockdown() then
             C_Timer.After(2, InitAll)
