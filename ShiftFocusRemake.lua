@@ -222,12 +222,29 @@ end
 local lastAnnouncedMapID
 -- 战斗中 SendChatMessage 为受保护函数,先挂起,脱战后补发
 local announcePending = false
+-- 12.0.5 起:副本战斗进行中(如中途加入进行中的大米)时 IsEncounterInProgress
+-- 为真,个人是否在战斗无关;此状态下 SendChatMessage 同样被保护,需延迟重试
+local announceRetries = 0
 
 local function DoAnnounce()
+    if not IsInPartyDungeon() then
+        announceRetries = 0
+        return
+    end
     if InCombatLockdown() then
         announcePending = true
         return
     end
+    -- 副本战斗进行中:退避重试(5/10/15/20/25/30 秒),等 encounter 结束后补发
+    if (IsEncounterInProgress and IsEncounterInProgress())
+        or (InChatMessagingLockdown and InChatMessagingLockdown()) then
+        if announceRetries < 6 then
+            announceRetries = announceRetries + 1
+            C_Timer.After(5 * announceRetries, DoAnnounce)
+        end
+        return
+    end
+    announceRetries = 0
     local token = markerChatTokens[ShiftFocusRemakeDB.selectedMarker]
     if token then
         local msg = string.format(L["PARTY_ANNOUNCE_MSG"], token)
