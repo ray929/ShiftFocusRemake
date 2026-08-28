@@ -9,6 +9,7 @@
 ## SavedVariables: ShiftFocusRemakeDB
 ## DefaultState: enabled
 ## Category: Combat
+## X-Curse-Project-ID: 1654879
 
 Localization.lua
 ShiftFocusRemake.lua
