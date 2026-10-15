@@ -1,4 +1,4 @@
-## Interface: 120100
+## Interface: 120105
 ## Title: ShiftFocusRemake
 ## Title-zhCN: 点击设置焦点
 ## Notes: Mouseover quick focus, default Shift + Left Click
