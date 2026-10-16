@@ -1,8 +1,10 @@
 ## Interface: 120105
 ## Title: ShiftFocusRemake
 ## Title-zhCN: 点击设置焦点
+## Title-zhTW: 點擊設定焦點
 ## Notes: Mouseover quick focus, default Shift + Left Click
 ## Notes-zhCN: 鼠标指向快速设置焦点，默认 Shift + 左键
+## Notes-zhTW: 滑鼠指向快速設定焦點，預設 Shift + 左鍵
 ## Author: 誓小言 (original), ray929 (remake)
 ## IconTexture: Interface\Icons\INV_Jewelcrafting_815_FocusingLens
 ## Version: @project-version@

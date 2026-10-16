@@ -319,8 +319,8 @@ end)
 -------------------------------------------------------------------------------
 --  焦点读条语音通知
 -------------------------------------------------------------------------------
--- 根据客户端语言选择 assets 下的语音文件
-local CAST_ALERT_FILE = (GetLocale() == "zhCN")
+-- 根据客户端语言选择 assets 下的语音文件(简繁中文共用普通话语音)
+local CAST_ALERT_FILE = (GetLocale() == "zhCN" or GetLocale() == "zhTW")
     and "Interface\\AddOns\\ShiftFocusRemake\\assets\\casting-cn.mp3"
     or  "Interface\\AddOns\\ShiftFocusRemake\\assets\\casting-en.mp3"
 

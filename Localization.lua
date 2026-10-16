@@ -55,4 +55,30 @@ if GetLocale() == "zhCN" then
     L["MARKER_8"] = "骷髅"
 end
 
+-- 繁體中文(台服用語)
+if GetLocale() == "zhTW" then
+    L["SETTING_TITLE"] = "ShiftFocusRemake 設定"
+    L["PARTY_ANNOUNCE_DESC"] = "進入5人地城後在隊伍通告焦點標記"
+    L["PARTY_ANNOUNCE_MSG"] = "我焦點%s並中斷"
+    L["ENABLE_MARKING_DESC"] = "設定焦點時同時標記："
+    L["PREVENT_OVERWRITE_DESC"] = "防止覆蓋已有標記 (/tm ~1-8)"
+    L["CAST_ALERT_DESC"] = "啟用焦點施法語音通知"
+    L["MODIFIER_KEY"] = "修飾鍵"
+    L["MOUSE_BUTTON"] = "滑鼠按鍵"
+    L["LEFT_BUTTON"] = "左鍵"
+    L["RIGHT_BUTTON"] = "右鍵"
+    L["MIDDLE_BUTTON"] = "中鍵"
+    L["BUTTON_4"] = "側4"
+    L["BUTTON_5"] = "側5"
+
+    L["MARKER_1"] = "星星"
+    L["MARKER_2"] = "圓圈"
+    L["MARKER_3"] = "菱形"
+    L["MARKER_4"] = "三角"
+    L["MARKER_5"] = "月亮"
+    L["MARKER_6"] = "方形"
+    L["MARKER_7"] = "十字"
+    L["MARKER_8"] = "骷髏"
+end
+
 ShiftFocusRemakeL = L
