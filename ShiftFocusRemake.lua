@@ -29,11 +29,18 @@ local function InitializeDB()
         enableMarking     = false,
         preventOverwrite  = false,
         partyAnnounce     = true,
+        castAlert         = true,       -- 焦点读条语音通知,默认开启
     }
     for k, v in pairs(defaults) do
         if ShiftFocusRemakeDB[k] == nil then
             ShiftFocusRemakeDB[k] = v
         end
+    end
+    -- 一次性迁移:早期版本可能已把 castAlert=false 残留进存档,
+    -- 统一纠正为默认启用;castAlertReset 落档后不再强制,用户手动关闭的选择会被保留
+    if not ShiftFocusRemakeDB.castAlertReset then
+        ShiftFocusRemakeDB.castAlertReset = true
+        ShiftFocusRemakeDB.castAlert = true
     end
 end
 InitializeDB()
@@ -310,6 +317,29 @@ frame:SetScript("OnEvent", function(_, event, arg1, arg2)
 end)
 
 -------------------------------------------------------------------------------
+--  焦点读条语音通知
+-------------------------------------------------------------------------------
+-- 根据客户端语言选择 assets 下的语音文件
+local CAST_ALERT_FILE = (GetLocale() == "zhCN")
+    and "Interface\\AddOns\\ShiftFocusRemake\\assets\\casting-cn.mp3"
+    or  "Interface\\AddOns\\ShiftFocusRemake\\assets\\casting-en.mp3"
+
+local focusAlertFrame = CreateFrame("Frame")
+-- 仅监听焦点单位,START/CHANNEL_START 各在读条开始时触发一次
+focusAlertFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "focus")
+focusAlertFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "focus")
+focusAlertFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+focusAlertFrame:SetScript("OnEvent", function(_, event)
+    if not ShiftFocusRemakeDB.castAlert then return end
+    -- 切换焦点时新焦点可能已在读条中
+    if event == "PLAYER_FOCUS_CHANGED"
+        and not (UnitCastingInfo("focus") or UnitChannelInfo("focus")) then
+        return
+    end
+    PlaySoundFile(CAST_ALERT_FILE, "Master")
+end)
+
+-------------------------------------------------------------------------------
 --  设置面板
 -------------------------------------------------------------------------------
 local panel = CreateFrame("Frame", "ShiftFocusRemakeOptionsPanel", UIParent)
@@ -343,6 +373,13 @@ preventOverwriteCheck:SetScript("OnClick", function(self)
     InitAll()
 end)
 
+local castAlertCheck = CreateFrame("CheckButton", "ShiftFocusRemakeCastAlertCheckbox", panel, "InterfaceOptionsCheckButtonTemplate")
+castAlertCheck:SetPoint("TOPLEFT", preventOverwriteCheck, "BOTTOMLEFT", 0, -10)
+castAlertCheck.Text:SetText(L["CAST_ALERT_DESC"])
+castAlertCheck:SetScript("OnClick", function(self)
+    ShiftFocusRemakeDB.castAlert = self:GetChecked()
+end)
+
 local markerDropdown = CreateFrame("Frame", "ShiftFocusRemakeMarkerDropdown", panel, "UIDropDownMenuTemplate")
 markerDropdown:SetPoint("LEFT", markCheck.Text, "RIGHT", -5, -2)
 UIDropDownMenu_SetWidth(markerDropdown, 100)
@@ -362,7 +399,7 @@ UIDropDownMenu_Initialize(markerDropdown, function()
 end)
 
 local modLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-modLabel:SetPoint("TOPLEFT", preventOverwriteCheck, "BOTTOMLEFT", 5, -25)
+modLabel:SetPoint("TOPLEFT", castAlertCheck, "BOTTOMLEFT", 5, -25)
 modLabel:SetText(L["MODIFIER_KEY"])
 
 local btnLabel = panel:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -412,6 +449,7 @@ panel:SetScript("OnShow", function()
     partyAnnounceCheck:SetChecked(ShiftFocusRemakeDB.partyAnnounce)
     markCheck:SetChecked(ShiftFocusRemakeDB.enableMarking)
     preventOverwriteCheck:SetChecked(ShiftFocusRemakeDB.preventOverwrite)
+    castAlertCheck:SetChecked(ShiftFocusRemakeDB.castAlert)
     UIDropDownMenu_SetText(modDropdown, ShiftFocusRemakeDB.modifier)
 
     local curIdx = ShiftFocusRemakeDB.selectedMarker or 1
